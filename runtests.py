@@ -31,6 +31,9 @@ engines_grp.add_argument("--spidermonkey", action="store_true",
 engines_grp.add_argument("--lambdaS5", action="store_true",
     help="Test LambdaS5 instead of JSRef. If you use this, you should probably also use --interp_path")
 
+engines_grp.add_argument("--lambdaCert", action="store_true",
+    help="Test LambdaCert instead of JSRef. If you use this, you should probably also use --interp_path")
+
 engines_grp.add_argument("--nodejs", action="store_true",
     help="Test node.js instead of JSRef. If you use this, you should probably also use --interp_path")
 
@@ -284,6 +287,7 @@ class ResultPrinter:
         if args.spidermonkey: return "SpiderMonkey"
         if args.nodejs: return "node.js"
         if args.lambdaS5: return "LambdaS5"
+        if args.lambdaCert: return "LambdaCert"
         return "JSRef"
 
 
@@ -416,6 +420,8 @@ elif args.lambdaS5:
     teardown = lambda : os.chdir(current_dir)
     test_runner = lambda filename: [os.path.abspath(args.interp_path),
                                     filename]
+elif args.lambdaCert:
+    test_runner = lambda filename : [args.interp_path, filename]
 else:
     test_runner = jsRefArgBuilder
 

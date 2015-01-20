@@ -20,6 +20,7 @@ FLOCQ_INC=-R $(FLOCQ)/src Flocq
 FAST=
 
 LAMBDAS5=~/Documents/data/LambdaS5/tests/s5
+LAMBDACERT=
 SPIDERMONKEY=~/Mozilla/Central/Central/js/src/build_release/js
 NODEJS=/usr/bin/nodejs
 
@@ -214,6 +215,9 @@ run_tests_spidermonkey:
 
 run_tests_lambdaS5:
 	./runtests.py --lambdaS5 --interp_path $(LAMBDAS5)
+
+run_tests_lambdaCert:
+	./runtests.py --lambdaCert --interp_path $(LAMBDACERT)
 
 run_tests_nodejs:
 	./runtests.py --nodejs --interp_path $(NODEJS)
