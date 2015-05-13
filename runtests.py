@@ -435,7 +435,10 @@ for filename in args.filenames:
     test_pipe = subprocess.Popen(test_runner(filename), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output,errors = test_pipe.communicate()
     output = output.decode("utf8").encode("ascii","xmlcharrefreplace")
-    errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
+    try:
+        errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
+    except:
+        errors = "Failed to recode errors"
     ret = test_pipe.returncode
     teardown()
 

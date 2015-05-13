@@ -41,25 +41,28 @@ def list_runs():
         print(id, implementation, datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
 
 class test_pair:
-    def __init__(self, id, status1, status2):
+    def __init__(self, id, status1, status2, stdout2, stderr2):
         self.id = id
         self.status1 = status1
         self.status2 = status2
+        self.stdout2 = stdout2
+        self.stderr2 = stderr2
 
 def compare_runs(run1, run2):
     kinds = ['agreed', 'better', 'worse', 'notrun', 'wtf']
     nums = {'agreed': [], 'wtf': [], 'better': [], 'worse': [], 'notrun': []}
-    for (id, status1, status2) in con.execute("select run1.test_id, run1.status, run2.status from single_test_runs run1 left outer join single_test_runs run2 on run1.test_id=run2.test_id where run1.batch_id=? and run2.batch_id=? order by run1.id", (run1, run2)):
+    for (id, status1, status2, stdout2, stderr2) in con.execute("select run1.test_id, run1.status, run2.status, run2.stdout, run2.stderr from single_test_runs run1 left outer join single_test_runs run2 on run1.test_id=run2.test_id where run1.batch_id=? and run2.batch_id=? order by run1.id", (run1, run2)):
         if status2 is None: kind = 'notrun'
         elif status1 == status2: kind = 'agreed'
         elif status1 == 'PASS': kind = 'worse'
         elif status2 == 'PASS': kind = 'better'
         else: kind = 'wtf'
-        nums[kind].append(test_pair(id, status1, status2))
+        nums[kind].append(test_pair(id, status1, status2, stdout2, stderr2))
     for kind in kinds:
         print kind
         for o in nums[kind]:
-            print "\t%s %s" % (o.id, o.status2)
+            print "\t%s: %s -> %s" % (o.id, o.status1, o.status2)
+            print o.stderr2
     for kind in kinds:
         print "%s %d" % (kind, len(nums[kind]))
 
