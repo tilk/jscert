@@ -1345,7 +1345,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (expr_lazy_op_1 b_ret y1 e2) o ->
       red_expr S C (expr_binary_op e1 op e2) o
 
-  | red_expr_lazy_op_1 : forall S0 S C b_ret e1 e2 v1 v o2 o1 o,
+  | red_expr_lazy_op_1 : forall S0 S C b_ret e2 v1 o1 o,
       red_expr S C (spec_to_boolean v1) o1 ->
       red_expr S C (expr_lazy_op_2 b_ret v1 o1 e2) o ->
       red_expr S0 C (expr_lazy_op_1 b_ret (ret S v1) e2) o
