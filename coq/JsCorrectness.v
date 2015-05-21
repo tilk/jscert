@@ -2875,7 +2875,7 @@ Lemma run_expr_correct : forall runs S C e o,
   red_expr S C (expr_basic e) o.
 Proof.
   introv IH R. unfolds in R.
-  destruct e as [ | | | pds | | |  | | | | | | ].
+  destruct e as [ | | | pds | | | | | | | | | | ].
   (* this *)
   run_inv. apply~ red_expr_this.
   (* identifier *)
@@ -2887,6 +2887,8 @@ Proof.
   run red_expr_object using run_construct_prealloc_correct.
   applys red_expr_object_0.
   applys* init_object_correct.
+  (* array *)
+  skip.
   (* function *)
   unfolds in R. destruct o0.
     let_name. destruct p as (lex'&S').

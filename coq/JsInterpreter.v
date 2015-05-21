@@ -2403,6 +2403,9 @@ Definition run_expr runs S C e : result :=
   | expr_assign e1 opo e2 =>
     run_expr_assign runs S C opo e1 e2
 
+  | expr_array _ =>
+    result_not_yet_implemented
+
   | expr_function fo args bd =>
     run_expr_function runs S C fo args bd
 
