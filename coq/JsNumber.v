@@ -39,6 +39,7 @@ Parameter min_value : number.
 
 Parameter neg : number -> number.
 Parameter floor : number -> number.
+Parameter ceil : number -> number.
 Parameter absolute : number -> number.
 Parameter sign : number -> number. (* returns arbitrary when x is zero or nan *)
 Parameter lt_bool : number -> number -> bool.
