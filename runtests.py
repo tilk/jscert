@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 A mini test harness. Runs all the files you specify through an interpreter
 you specify, and collates the exit codes for you. Call with the -h switch to
@@ -79,7 +79,12 @@ argp.add_argument("--debug",action="store_true",
 argp.add_argument("--no_parasite",action="store_true",
     help="Run the interpreter with -no-parasite flag (the options --debug and --verbose might be useless in this mode).")
 
+argp.add_argument("--timeout",action="store",default=None,
+    help="Timeout for the tested interpreter (in seconds)")
+
 args = argp.parse_args()
+
+if args.timeout is not None: args.timeout = int(args.timeout)
 
 # Some handy data structures
 
@@ -148,9 +153,9 @@ class DBManager:
 
     def __init__(self):
         if not os.path.isfile(args.dbpath):
-            print args.dbpath
-            print """ You need to set up your personal results database before saving data to it.
-            See the README for details. """
+            print(args.dbpath)
+            print(""" You need to set up your personal results database before saving data to it.
+            See the README for details. """)
             exit(1)
         self.con = db.connect(args.dbpath)
 
@@ -230,13 +235,13 @@ class ResultPrinter:
             self.dbmanager = DBManager()
 
     def print_heading(self,s):
-        print self.HEADING+s+self.NORMAL
+        print(self.HEADING+s+self.NORMAL)
     def print_pass(self,s):
-        print self.PASS+s+self.NORMAL
+        print(self.PASS+s+self.NORMAL)
     def print_fail(self,s):
-        print self.FAIL+s+self.NORMAL
+        print(self.FAIL+s+self.NORMAL)
     def print_abandon(self,s):
-        print self.ABANDON+s+self.NORMAL
+        print(self.ABANDON+s+self.NORMAL)
 
     def __record_results__(self,result):
         if result.passed():
@@ -249,11 +254,11 @@ class ResultPrinter:
             self.print_abandon("Aborted...")
             self.aborted_tests.append(result)
         else:
-              print "Something really weird happened"
+              print("Something really weird happened")
               exit(1)
         if args.verbose or args.debug:
-            print result.stdout
-            print result.stderr
+            print(result.stdout)
+            print(result.stderr)
 
     def start_test(self,filename):
         self.print_heading(filename)
@@ -310,11 +315,11 @@ class ResultPrinter:
 
     def index_reports(self):
         import pystache
-        import urllib
+        import urllib.parse
         # Get a list of all non-index html files in the reportdir
-        filenames = filter(lambda x:x!="index.html",filter(lambda x:x.endswith(".html"),os.listdir(args.reportdir)))
+        filenames = list(filter(lambda x:x!="index.html",filter(lambda x:x.endswith(".html"),os.listdir(args.reportdir))))
         filenames.sort()
-        filenames = map(lambda x:{"linkname":os.path.basename(x),"filename":urllib.quote(os.path.basename(x))},filenames)
+        filenames = map(lambda x:{"linkname":os.path.basename(x),"filename":urllib.parse.quote(os.path.basename(x))},filenames)
         simplerenderer = pystache.Renderer(escape = lambda u: u)
         with open(os.path.join(args.templatedir,"template.tmpl"),"r") as outer:
             with open(os.path.join(args.templatedir,"index.tmpl"),"r") as template:
@@ -324,21 +329,21 @@ class ResultPrinter:
 
     def end_message(self):
         if len(self.failed_tests)>0:
-            print "The following tests failed:"
+            print("The following tests failed:")
             for failure in self.failed_tests:
-                print failure.filename
+                print(failure.filename)
         if len(self.aborted_tests)>0:
-            print "The following tests were abandoned"
+            print("The following tests were abandoned")
             for abandoned in self.aborted_tests:
-                print abandoned.filename
-        print "There were "+str(len(self.passed_tests))+" passes, "+str(len(self.failed_tests))+"  fails, and "+str(len(self.aborted_tests))+" abandoned."
+                print(abandoned.filename)
+        print("There were "+str(len(self.passed_tests))+" passes, "+str(len(self.failed_tests))+"  fails, and "+str(len(self.aborted_tests))+" abandoned.")
         if args.webreport:
             self.produce_web_page()
         if args.dbsave:
             self.update_database()
 
     def interrupt_handler(self,signal,frame):
-        print "Interrupted..."
+        print("Interrupted...")
         self.end_message()
         exit(1)
 
@@ -398,7 +403,7 @@ def jsRefArgBuilder(filename):
         arglist.append(filename)
     elif usesInclude(filename):
         if args.verbose or args.debug:
-            print "Using include libs."
+            print("Using include libs.")
         arglist.append("-test_prelude")
         arglist.append("interp/libloader.js")
         arglist.append("-file")
@@ -433,13 +438,17 @@ for filename in args.filenames:
 
     setup()
     test_pipe = subprocess.Popen(test_runner(filename), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output,errors = test_pipe.communicate()
-    output = output.decode("utf8").encode("ascii","xmlcharrefreplace")
     try:
-        errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
-    except:
-        errors = "Failed to recode errors"
-    ret = test_pipe.returncode
+        output,errors = test_pipe.communicate(timeout=args.timeout)
+        ret = test_pipe.returncode
+    except subprocess.TimeoutExpired:
+        test_pipe.terminate()
+        output,errors = test_pipe.communicate()
+        errors += " TEST TIMEOUTED"
+        ret = 255 # abort
+    output = output.decode("utf8").encode("ascii","xmlcharrefreplace")
+    try: errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
+    except: errors = "Failed to recode errors"
     teardown()
 
     current_test(ret,output,errors)
