@@ -1086,7 +1086,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       ref_is_unresolvable r ->
       red_expr S0 C (expr_typeof_1 (out_ter S r)) (out_ter S "undefined")
 
-  | red_expr_typeof_1_ref_resolvable : forall S0 S C r o1 y1 o,
+  | red_expr_typeof_1_ref_resolvable : forall S0 S C r y1 o,
       ~ (ref_is_unresolvable r) ->
       red_spec S C (spec_get_value r) y1 ->
       red_expr S C (expr_typeof_2 y1) o ->
