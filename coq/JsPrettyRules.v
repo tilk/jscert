@@ -2050,7 +2050,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
 
   | red_spec_env_record_create_mutable_binding_1_decl_indom : forall S C L x deletable Ed S',
       ~ decl_env_record_indom Ed x ->
-      S' = env_record_write_decl_env S L x (mutability_of_bool deletable) undef ->
+      S' = env_record_write_decl_env S L Ed x (mutability_of_bool deletable) undef ->
       red_expr S C (spec_env_record_create_mutable_binding_1 L x deletable (env_record_decl Ed)) (out_void S')
 
   | red_spec_env_record_create_mutable_binding_1_object : forall o1 S C L x deletable l pt o,
@@ -2077,7 +2077,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   | red_spec_env_record_set_mutable_binding_1_decl : forall v_old mu S C L x v str Ed K o,
       decl_env_record_binds Ed x mu v_old ->
       K = (If mutability_is_mutable mu
-            then (let S' := env_record_write_decl_env S L x mu v in
+            then (let S' := env_record_write_decl_env S L Ed x mu v in
                   spec_returns (out_void S'))
             else (spec_error_or_void str native_error_type)) ->
       red_expr S C K o ->
@@ -2156,7 +2156,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   | red_spec_env_record_create_immutable_binding : forall Ed S C L x S',
       env_record_binds S L (env_record_decl Ed) ->
       ~ decl_env_record_indom Ed x ->
-      S' = env_record_write_decl_env S L x mutability_uninitialized_immutable undef ->
+      S' = env_record_write_decl_env S L Ed x mutability_uninitialized_immutable undef ->
       red_expr S C (spec_env_record_create_immutable_binding L x) (out_void S')
 
   (** Initialize immutable binding (returns void) (10.2.1.1.8) *)
@@ -2164,7 +2164,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   | red_spec_env_record_initialize_immutable_binding : forall Ed v_old S C L x v S',
       env_record_binds S L (env_record_decl Ed) ->
       decl_env_record_binds Ed x mutability_uninitialized_immutable v_old -> (* Note: v_old is always undef here *)
-      S' = env_record_write_decl_env S L x mutability_immutable v ->
+      S' = env_record_write_decl_env S L Ed x mutability_immutable v ->
       red_expr S C (spec_env_record_initialize_immutable_binding L x v) (out_void S')
 
   (** Auxiliary: combination of create mutable binding and set mutable binding (returns void) *)

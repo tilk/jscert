@@ -966,7 +966,7 @@ Definition env_record_set_mutable_binding runs S C L x v str : result_void :=
       if_some (Heap.read_option Ed x) (fun rm =>
         let '(mu, v_old) := rm in
         ifb mutability_is_mutable mu then
-          res_void (env_record_write_decl_env S L x mu v)
+          res_void (env_record_write_decl_env S L Ed x mu v)
         else out_error_or_void S str native_error_type)
     | env_record_object l pt =>
       object_put runs S C l x v str
@@ -1022,7 +1022,7 @@ Definition env_record_create_mutable_binding runs S C L x (deletable_opt : optio
       ifb decl_env_record_indom Ed x then
         impossible_with_heap_because S "Already declared environnment record in [env_record_create_mutable_binding]."
       else
-        'let S' := env_record_write_decl_env S L x (mutability_of_bool deletable) undef in
+        'let S' := env_record_write_decl_env S L Ed x (mutability_of_bool deletable) undef in
         res_void S'
     | env_record_object l pt =>
       if_bool (object_has_prop runs S C l x) (fun S1 has =>
@@ -1045,7 +1045,7 @@ Definition env_record_create_immutable_binding S L x : result_void :=
       ifb decl_env_record_indom Ed x then
         impossible_with_heap_because S "Already declared environnment record in [env_record_create_immutable_binding]."
       else
-        res_void (env_record_write_decl_env S L x mutability_uninitialized_immutable undef)
+        res_void (env_record_write_decl_env S L Ed x mutability_uninitialized_immutable undef)
     | env_record_object _ _ =>
         impossible_with_heap_because S "[env_record_create_immutable_binding] received an environnment record object."
     end).
@@ -1056,7 +1056,7 @@ Definition env_record_initialize_immutable_binding S L x v : result_void :=
     | env_record_decl Ed =>
       if_some (pick_option (Heap.binds Ed x)) (fun evs =>
         ifb evs = (mutability_uninitialized_immutable, undef) then
-          'let S' := env_record_write_decl_env S L x mutability_immutable v in
+          'let S' := env_record_write_decl_env S L Ed x mutability_immutable v in
           res_void S'
         else
           impossible_with_heap_because S "Non suitable binding in [env_record_initialize_immutable_binding].")

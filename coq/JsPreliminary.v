@@ -878,13 +878,9 @@ Definition decl_env_record_rem Ed x : decl_env_record :=
 
 (** LATER: Change the following definition to a relation. *)
 
-Definition env_record_write_decl_env S L x mu v :=
-  match Heap.read (state_env_record_heap S) L with
-  | env_record_decl Ed =>
-     let env' := decl_env_record_write Ed x mu v in
-     env_record_write S L (env_record_decl env')
-  | env_record_object _ _ => S (* It should never happen *)
-  end.
+Definition env_record_write_decl_env S L Ed x mu v :=
+  env_record_write S L (env_record_decl 
+    (decl_env_record_write Ed x mu v)).
 
 
 (**************************************************************)
