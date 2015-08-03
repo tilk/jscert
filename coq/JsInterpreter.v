@@ -2100,8 +2100,8 @@ Definition run_expr_call runs S C e1 e2s : result :=
           *)
           ifb (is_callable S3 l) then
             'let follow := fun vthis =>
-              ifb l = prealloc_global_eval then
-                run_eval runs S3 C is_eval_direct vs
+              ifb l = prealloc_global_eval /\ is_eval_direct then
+                run_eval runs S3 C true vs
               else runs_type_call runs S3 C l vthis vs in
             match rv with
             | resvalue_value v => follow undef
@@ -2531,6 +2531,9 @@ Fixpoint push runs S C l args ilen: result :=
 
 Definition run_call_prealloc runs S C B vthis (args : list value) : result :=
   match B with
+
+  | prealloc_global_eval =>
+     run_eval runs S C false args
 
   | prealloc_global_is_nan =>
     let v := get_arg 0 args in

@@ -2669,9 +2669,11 @@ Proof.
       M vthis = o ->
       red_expr S0 C (expr_call_5 l is_eval_direct vs (out_ter S3 vthis)) o).
     clear HR S o. introv HR. subst M.
-    case_if.
-      subst. applys red_expr_call_5_eval. applys* run_eval_correct.
-      applys* red_expr_call_5_not_eval. apply* IH.
+    case_if as a.
+      destruct a as (a1&a2). apply bool_eq_true in a2. rewrite a2. subst_hyp a1.
+        applys red_expr_call_5_eval. applys* run_eval_correct.
+      applys* red_expr_call_5_not_eval. rew_logic in *. rew_reflect. eassumption.
+        apply* IH.
     clear EQM.
   subst. destruct rv; tryfalse.
     applys* red_expr_call_4_not_ref.
@@ -3378,7 +3380,8 @@ Proof.
   (* prealloc_global *)
   discriminate.
   (* prealloc_global_eval *)
-  discriminate.
+  apply red_spec_call_prealloc_global_eval.
+  applys* run_eval_correct.
   (* prealloc_global_is_finite *)
   skip. (* LATER *)
   (* prealloc_global_is_nan *)

@@ -937,12 +937,12 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (expr_call_5  l is_eval_direct vs (out_ter S undef)) o ->
       red_expr S C (expr_call_4 (resvalue_value v) l is_eval_direct vs) o
 
-  | red_expr_call_5_eval : forall S0 S C is_eval_direct vs v o, (* Step 8, special for eval *)
-      red_expr S C (spec_call_global_eval is_eval_direct vs) o ->
-      red_expr S0 C (expr_call_5 prealloc_global_eval is_eval_direct vs (out_ter S v)) o
+  | red_expr_call_5_eval : forall S0 S C vs v o, (* Step 8, special for eval *)
+      red_expr S C (spec_call_global_eval true vs) o ->
+      red_expr S0 C (expr_call_5 prealloc_global_eval true vs (out_ter S v)) o
 
    | red_expr_call_5_not_eval : forall S0 S C l is_eval_direct vs v o, (* Step 8 *)
-      l <> prealloc_global_eval ->
+      l <> prealloc_global_eval \/ !is_eval_direct ->
       red_expr S C (spec_call l v vs) o ->
       red_expr S0 C (expr_call_5 l is_eval_direct vs (out_ter S v)) o
 
@@ -2904,6 +2904,12 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
 
 (*------------------------------------------------------------*)
 (** ** Global object builtin functions (15.1) *)
+
+  (** Calling eval as a function *)
+
+  | red_spec_call_prealloc_global_eval : forall S C o vthis args,
+      red_expr S C (spec_call_global_eval false args) o ->
+      red_expr S C (spec_call_prealloc prealloc_global_eval vthis args) o
 
   (** Eval (returns value)  (15.1.2) *)
 
