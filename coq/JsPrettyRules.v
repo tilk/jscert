@@ -2771,7 +2771,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_call_default l this args) o ->
       red_expr S C (spec_call_1 call_default l this args) o
 
-  | red_spec_call_default : forall S C l this args o1 o, (* Step 1, Step 3 implicit *)
+  | red_spec_call_default : forall S C l this args o, (* Step 1, Step 3 implicit *)
       red_expr S C (spec_entering_func_code l this args (spec_call_default_1 l)) o ->
       red_expr S C (spec_call_default l this args) o
 
