@@ -161,7 +161,7 @@ Inductive ext_expr :=
 
   (** Extended expressions for operations on objects *)
 
-  | spec_object_get : value -> prop_name -> ext_expr
+  | spec_object_get : object_loc -> prop_name -> ext_expr
   | spec_object_get_1 : builtin_get -> value -> object_loc -> prop_name -> ext_expr
   | spec_object_get_2 : value -> specret full_descriptor -> ext_expr
   | spec_object_get_3 : value -> value -> ext_expr

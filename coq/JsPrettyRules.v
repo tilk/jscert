@@ -2496,7 +2496,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
      red_expr S C (spec_args_obj_get_1 vthis l x lmap (ret S0 full_descriptor_undef)) o
 
   | red_spec_object_get_args_obj_1_attrs : forall S0 S C vthis l x lmap A o, (* Step 4 *)
-     red_expr S0 C (spec_object_get (value_object lmap) x) o ->
+     red_expr S0 C (spec_object_get lmap x) o ->
      red_expr S C (spec_args_obj_get_1 vthis l x lmap (ret S0 (full_descriptor_some A))) o
 
   (* Arguments Object: DefineOwnProperty (returns bool) (10.6) *)
@@ -4284,7 +4284,7 @@ with red_spec : forall {T}, state -> execution_ctx -> ext_spec -> specret T -> P
       red_spec S0 C (spec_args_obj_get_own_prop_1 l x (ret S (full_descriptor_some A))) y
 
   | red_spec_object_get_own_prop_args_obj_2_attrs : forall o1 S0 S C l x lmap A Amap (y:specret full_descriptor), (* Step 5 *)
-      red_expr S0 C (spec_object_get (value_object lmap) x) o1 ->
+      red_expr S0 C (spec_object_get lmap x) o1 ->
       red_spec S0 C (spec_args_obj_get_own_prop_3 A o1) y ->
       red_spec S C (spec_args_obj_get_own_prop_2 l x lmap A (ret S0 (full_descriptor_some Amap))) y
 
@@ -4357,14 +4357,18 @@ with red_spec : forall {T}, state -> execution_ctx -> ext_spec -> specret T -> P
       red_spec S C (spec_error_spec native_error_ref) y ->
       red_spec S C (spec_get_value r) y
 
-  | red_spec_ref_get_value_ref_b: forall ext_get v S C r o1 (y:specret value), (* Steps 2 and 4 *)
+  | red_spec_ref_get_value_ref_b : forall l S C r o1 (y:specret value), (* Steps 2 and 4 *)
       ref_is_property r ->
+      ref_base r = ref_base_type_value l ->
+      red_expr S C (spec_object_get l (ref_name r)) o1 ->
+      red_spec S C (spec_get_value_ref_b_1 o1) y ->
+      red_spec S C (spec_get_value r) y
+
+  | red_spec_ref_get_value_ref_b_prim : forall v S C r o1 (y:specret value), (* Steps 2 and 4 *)
+      ref_is_property r ->
+      ref_has_primitive_base r ->
       ref_base r = ref_base_type_value v ->
-      ext_get = (If ref_has_primitive_base r
-        then spec_prim_value_get
-        else spec_object_get) ->
-        (* LATER: It would make more sense for [spec_object_get] to get a location instead of a value.  Can this part of the rule be splitted in two to get a location [l] in the second case to directly give it to [spec_object_get] and avoid confusions in the rule [red_spec_object_get]? -- Martin. *)
-      red_expr S C (ext_get v (ref_name r)) o1 ->
+      red_expr S C (spec_prim_value_get v (ref_name r)) o1 ->
       red_spec S C (spec_get_value_ref_b_1 o1) y ->
       red_spec S C (spec_get_value r) y
 

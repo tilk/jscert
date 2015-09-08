@@ -1639,10 +1639,10 @@ Proof.
    asserts: (ref_is_property r). unfolds. destruct* EQ.
    lets (v&Ev): ref_kind_base_object_inv EQ. rewrite Ev in HR.
    unfolds ref_has_primitive_base. case_if.
-     run* red_spec_ref_get_value_ref_b using prim_value_get_correct. case_if*.
+     run* red_spec_ref_get_value_ref_b_prim using prim_value_get_correct.
       applys* red_spec_ref_get_value_ref_b_1.
      destruct EQ; tryfalse. destruct v as [|l]; tryfalse.
-     run* red_spec_ref_get_value_ref_b using run_object_get_correct. case_if*.
+     run* red_spec_ref_get_value_ref_b using run_object_get_correct.
       applys* red_spec_ref_get_value_ref_b_1.
     clear EQM.
   sets_eq k: (ref_kind_of r). destruct k; tryfalse.
