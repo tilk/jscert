@@ -2268,11 +2268,11 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_binding_inst_formal_params_2 args L x xs str v o1) o ->
       red_expr S0 C (spec_binding_inst_formal_params_1 args L x xs str v (out_ter S false)) o
 
-  | red_spec_binding_inst_formal_params_2 : forall S0 S C args L x xs str v o o1, (* Step 4d iv join *)
+  | red_spec_binding_inst_formal_params_2 : forall S0 S C args L x xs str v o, (* Step 4d iv join *)
       red_expr S C (spec_binding_inst_formal_params_3 args L x xs str v) o ->
       red_expr S0 C (spec_binding_inst_formal_params_2 args L x xs str v (out_void S)) o
 
-  | red_spec_binding_inst_formal_params_1_declared : forall o1 S0 S C args L x xs str v o, (* Step 4d iv else *)
+  | red_spec_binding_inst_formal_params_1_declared : forall S0 S C args L x xs str v o, (* Step 4d iv else *)
       red_expr S C (spec_binding_inst_formal_params_3 args L x xs str v) o ->
       red_expr S0 C (spec_binding_inst_formal_params_1 args L x xs str v (out_ter S true)) o
 
@@ -2281,7 +2281,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_binding_inst_formal_params_4 args L xs str o1) o ->
       red_expr S C (spec_binding_inst_formal_params_3 args L x xs str v) o
 
-  | red_spec_binding_inst_formal_params_4 : forall S0 S C args L xs str o1 o, (* Step 4d loop *)
+  | red_spec_binding_inst_formal_params_4 : forall S0 S C args L xs str o, (* Step 4d loop *)
       red_expr S C (spec_binding_inst_formal_params args L xs str) o ->
       red_expr S0 C (spec_binding_inst_formal_params_4 args L xs str (out_void S)) o
 
@@ -2350,7 +2350,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_binding_inst_function_decls_6 L fds str bconfig o1) o ->
       red_expr S C (spec_binding_inst_function_decls_5 L fd fds str fo bconfig) o
 
-  | red_spec_binding_inst_function_decls_6 : forall o1 L S0 S C fds str bconfig o, (* Step 5 loop *)
+  | red_spec_binding_inst_function_decls_6 : forall L S0 S C fds str bconfig o, (* Step 5 loop *)
       red_expr S C (spec_binding_inst_function_decls L fds str bconfig) o ->
       red_expr S0 C (spec_binding_inst_function_decls_6 L fds str bconfig (out_void S)) o
 
@@ -2371,11 +2371,11 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_binding_inst_arg_obj_2 L largs o1) o ->
       red_expr S0 C (spec_binding_inst_arg_obj_1 L true (out_ter S largs)) o
 
-  | red_spec_binding_inst_arg_obj_2 : forall o1 L S0 S C largs o, (* Step 7b ii *)
+  | red_spec_binding_inst_arg_obj_2 : forall L S0 S C largs o, (* Step 7b ii *)
       red_expr S C (spec_env_record_initialize_immutable_binding L "arguments" (value_object largs)) o ->
       red_expr S0 C (spec_binding_inst_arg_obj_2 L largs (out_void S)) o
 
-  | red_spec_binding_inst_arg_obj_1_not_strict : forall o1 L S0 S C largs o, (* Step 7c *)
+  | red_spec_binding_inst_arg_obj_1_not_strict : forall L S0 S C largs o, (* Step 7c *)
       red_expr S C (spec_env_record_create_set_mutable_binding L "arguments" None largs false) o ->
       red_expr S0 C (spec_binding_inst_arg_obj_1 L false (out_ter S largs)) o
 
