@@ -214,7 +214,7 @@ Inductive ext_expr :=
   | spec_prim_value_get : value -> prop_name -> ext_expr
   | spec_prim_value_get_1 : value -> prop_name -> out -> ext_expr
   | spec_prim_value_put : value -> prop_name -> value -> bool -> ext_expr
-  | spec_prim_value_put_1 : prim -> prop_name -> value -> bool -> out -> ext_expr
+  | spec_prim_value_put_1 : value -> prop_name -> value -> bool -> out -> ext_expr
 
   (** Extended expressions for operations on references *)
   | spec_put_value : resvalue -> value -> ext_expr

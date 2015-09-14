@@ -2016,14 +2016,14 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   (** Special "Put" method for primitive values (returns value)  (8.7.2)
       Note: implemented with the same rules as [spec_object_put]*)
 
-  | red_spec_prim_value_put : forall S C w x v throw o1 o,
-      red_expr S C (spec_to_object w) o1 ->
-      red_expr S C (spec_prim_value_put_1 w x v throw o1) o ->
-      red_expr S C (spec_prim_value_put w x v throw) o
+  | red_spec_prim_value_put : forall S C v x v1 throw o1 o,
+      red_expr S C (spec_to_object v) o1 ->
+      red_expr S C (spec_prim_value_put_1 v x v1 throw o1) o ->
+      red_expr S C (spec_prim_value_put v x v1 throw) o
 
-  | red_spec_prim_value_put_1 : forall S0 S C w x v throw l o,
-      red_expr S C (spec_object_put_1 builtin_put_default w l x v throw) o ->
-      red_expr S0 C (spec_prim_value_put_1 w x v throw (out_ter S l)) o
+  | red_spec_prim_value_put_1 : forall S0 S C v x v1 throw l o,
+      red_expr S C (spec_object_put_1 builtin_put_default v l x v1 throw) o ->
+      red_expr S0 C (spec_prim_value_put_1 v x v1 throw (out_ter S l)) o
 
 
 
