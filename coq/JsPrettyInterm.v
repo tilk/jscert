@@ -175,7 +175,7 @@ Inductive ext_expr :=
   | spec_object_can_put_5 : object_loc -> specret full_descriptor -> ext_expr
   | spec_object_can_put_6 : attributes_data -> bool -> ext_expr
 
-  | spec_object_put : value -> prop_name -> value -> bool -> ext_expr
+  | spec_object_put : object_loc -> prop_name -> value -> bool -> ext_expr
   | spec_object_put_1 : builtin_put -> value -> object_loc -> prop_name -> value -> bool -> ext_expr
   | spec_object_put_2 : value -> object_loc -> prop_name -> value -> bool -> out -> ext_expr
   | spec_object_put_3 : value -> object_loc -> prop_name -> value -> bool -> specret full_descriptor -> ext_expr

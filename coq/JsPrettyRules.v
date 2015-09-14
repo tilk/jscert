@@ -1994,13 +1994,18 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_object_put prealloc_global (ref_name r) vnew throw_false) o ->
       red_expr S C (spec_put_value r vnew) o
 
-  | red_spec_ref_put_value_ref_b : forall v ext_put S C r vnew o, (* Step 4 *)
+  | red_spec_ref_put_value_ref_b_has_primitive_base : forall v S C r vnew o, (* Step 4 *)
       ref_is_property r ->
       ref_base r = ref_base_type_value v ->
-      ext_put = (If ref_has_primitive_base r
-        then spec_prim_value_put
-        else spec_object_put) ->
-      red_expr S C (ext_put v (ref_name r) vnew (ref_strict r)) o ->
+      ref_has_primitive_base r ->
+      red_expr S C (spec_prim_value_put v (ref_name r) vnew (ref_strict r)) o ->
+      red_expr S C (spec_put_value (resvalue_ref r) vnew) o
+
+  | red_spec_ref_put_value_ref_b_has_not_primitive_base : forall l S C r vnew o, (* Step 4 *)
+      ref_is_property r ->
+      ref_base r = ref_base_type_value l ->
+      ~ ref_has_primitive_base r ->
+      red_expr S C (spec_object_put l (ref_name r) vnew (ref_strict r)) o ->
       red_expr S C (spec_put_value (resvalue_ref r) vnew) o
 
   | red_spec_ref_put_value_ref_c : forall L S C r vnew o, (* Step 5 *)
@@ -2525,7 +2530,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   | red_spec_object_define_own_prop_args_obj_2_true_not_acc_some : forall v o1 S C l x Desc throw lmap A S' o, (* Step 5 b i *)
       ~ (descriptor_is_accessor Desc) ->
       descriptor_value Desc = Some v ->
-      red_expr S' C (spec_object_put (value_object lmap) x v throw) o1 ->
+      red_expr S' C (spec_object_put lmap x v throw) o1 ->
       red_expr S' C (spec_args_obj_define_own_prop_3 l x Desc throw lmap o1) o ->
       red_expr S C (spec_args_obj_define_own_prop_2 l x Desc throw lmap (full_descriptor_some A) (out_ter S' true)) o
 

@@ -1717,10 +1717,10 @@ Proof.
   case_if.
   cases (ref_base r); tryfalse.
   case_if; destruct v0; tryfalse.
-  applys* red_spec_ref_put_value_ref_b.
-  case_if. applys* prim_value_put_correct.
-  applys* red_spec_ref_put_value_ref_b.
-  case_if. applys* object_put_correct.
+  applys* red_spec_ref_put_value_ref_b_has_primitive_base.
+    applys* prim_value_put_correct.
+  applys* red_spec_ref_put_value_ref_b_has_not_primitive_base.
+    applys* object_put_correct.
   cases (ref_base r); tryfalse.
    applys* red_spec_ref_put_value_ref_c.
    applys* env_record_set_mutable_binding_correct.
