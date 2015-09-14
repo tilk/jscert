@@ -785,7 +785,7 @@ Definition mutability_of_bool deletable :=
 (** Characterization of mutability flags that allow for a mutation *)
 
 Definition mutability_is_mutable mu :=
-  mu <> mutability_immutable.
+  mu <> mutability_immutable /\ mu <> mutability_uninitialized_immutable.
 
 
 (**************************************************************)
