@@ -1521,8 +1521,8 @@ Proof.
   introv IH HR. unfolds in HR. destruct B.
   run red_spec_object_put_1_default using object_can_put_correct. cases_if.
    run red_spec_object_put_2_true. let_name.
-    asserts follows_correct: (forall Aa o,
-        a = full_descriptor_undef \/ (a = attributes_accessor_of Aa) ->
+    asserts follows_correct: (forall o,
+        a = full_descriptor_undef \/ (exists Aa, a = attributes_accessor_of Aa) ->
         follow tt = res_out o ->
         red_expr S0 C (spec_object_put_3 vthis l x v str (specret_val S2 a)) o).
       clear HR. introv N E. substs.
@@ -1542,13 +1542,13 @@ Proof.
           applys* red_spec_object_put_4_not_accessor_prim H.
          let_simpl. run* red_spec_object_put_4_not_accessor_object using
            object_define_own_prop_correct. apply~ red_spec_object_put_5_return.
-     destruct a as [|[Ad|Aa]]. applys~ follows_correct (arbitrary : attributes_accessor).
+     destruct a as [|[Ad|Aa]]. applys~ follows_correct.
      clear EQfollow follow follows_correct.
      destruct vthis as [wthis|lthis].
       apply~ red_spec_object_put_3_data_prim. apply~ out_error_or_void_correct.
       let_simpl. run* red_spec_object_put_3_data_object
         using object_define_own_prop_correct. apply~ red_spec_object_put_5_return.
-     apply~ follows_correct.
+     applys~ follows_correct. jauto.
    apply~ red_spec_object_put_2_false. apply~ out_error_or_void_correct.
 Qed.
 

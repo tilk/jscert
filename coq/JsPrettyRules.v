@@ -1736,8 +1736,8 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_error_or_void throw native_error_type) o ->
       red_expr S0 C (spec_object_put_3 wthis l x v throw (ret (T:=full_descriptor) S (attributes_data_of Ad))) o
 
-  | red_spec_object_put_3_not_data : forall S0 S C vthis l x v throw Aa y1 o D, (* Step 4 *)
-      (D = full_descriptor_undef) \/ (D = (attributes_accessor_of Aa)) ->
+  | red_spec_object_put_3_not_data : forall S0 S C vthis l x v throw y1 o D, (* Step 4 *)
+      (D = full_descriptor_undef) \/ (exists Aa, D = (attributes_accessor_of Aa)) ->
       red_spec S C (spec_object_get_prop l x) y1 ->
       red_expr S C (spec_object_put_4 vthis l x v throw y1) o ->
       red_expr S0 C (spec_object_put_3 vthis l x v throw (ret S D)) o
