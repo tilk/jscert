@@ -721,7 +721,10 @@ Definition prim_new_object S w : result :=
       'let O1 := object_with_get_own_property O2 builtin_get_own_prop_string in
       'let O :=  object_with_primitive_value O1 s in
       let '(l, S1) := object_alloc S O in
-      out_ter S1 l
+      (* This is probably not correct. *)
+      if_some (pick_option (object_set_property S1 l "length" (attributes_data_intro_constant (String.length s)))) (fun S' => 
+        res_ter S' l) 
+      (* While the spec never explicitly says to do this, it specifies that it is the case immediately after creation *)
   | _ =>
     impossible_with_heap_because S "[prim_new_object] received an null or undef."
   end.

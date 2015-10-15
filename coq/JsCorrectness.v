@@ -1470,7 +1470,8 @@ Proof. introv H. destruct w; tryfalse;
  inversion H.
  applys* red_spec_prim_new_object_bool.
  applys* red_spec_prim_new_object_number.
- applys* red_spec_prim_new_object_string.
+ run. applys* red_spec_prim_new_object_string.
+ apply pick_option_correct in E. auto.
 Qed.
 
 Lemma run_error_correct_2 : forall T S (ne : native_error) o C,
