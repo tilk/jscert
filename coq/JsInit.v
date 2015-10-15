@@ -210,7 +210,7 @@ Definition object_get_proto_of_function_object :=
   object_create_prealloc_call prealloc_object_get_proto_of 1 Heap.empty.
 
 Definition object_get_own_prop_descriptor_function_object :=
-  object_create_prealloc_call prealloc_object_get_own_prop_descriptor 1 Heap.empty.
+  object_create_prealloc_call prealloc_object_get_own_prop_descriptor 2 Heap.empty.
 Definition object_get_own_prop_name_function_object :=
   object_create_prealloc_call prealloc_object_get_own_prop_name 1 Heap.empty.
 Definition object_create_function_object :=
@@ -260,7 +260,7 @@ Definition object_proto_value_of_function_object :=
   object_create_prealloc_call prealloc_object_proto_value_of 0 Heap.empty.
 
 Definition object_proto_has_own_prop_function_object :=
-  object_create_prealloc_call prealloc_object_proto_has_own_prop 0 Heap.empty.
+  object_create_prealloc_call prealloc_object_proto_has_own_prop 1 Heap.empty.
 
 Definition object_proto_is_prototype_of_function_object :=
   object_create_prealloc_call prealloc_object_proto_is_prototype_of 1 Heap.empty.
@@ -369,7 +369,7 @@ Definition array_proto_pop_function_object :=
   object_create_prealloc_call prealloc_array_proto_pop 0 Heap.empty.
 
 Definition array_proto_push_function_object :=
-  object_create_prealloc_call prealloc_array_proto_push 0 Heap.empty.
+  object_create_prealloc_call prealloc_array_proto_push 1 Heap.empty.
 
 (**************************************************************)
 (** String object *)
