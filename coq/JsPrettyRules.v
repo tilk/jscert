@@ -3936,7 +3936,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
 
   (** new Error(value)  (returns object_loc)  (15.11.2.1) *)
 
-  | red_spec_construct_error : forall S C v o o1 args,
+  | red_spec_construct_error : forall S C v o args,
       arguments_from args (v::nil) ->
       red_expr S C (spec_build_error prealloc_error_proto v) o ->
       red_expr S C (spec_construct_prealloc prealloc_error args) o
@@ -4014,7 +4014,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
 
   (** new NativeError(value)  (returns object_loc)  (15.11.2.1) *)
 
-  | red_spec_construct_native_error : forall S C v o o1 ne args,
+  | red_spec_construct_native_error : forall S C v o ne args,
       arguments_from args (v::nil) ->
       red_expr S C (spec_build_error (prealloc_native_error_proto ne) v) o ->
       red_expr S C (spec_construct_prealloc (prealloc_native_error ne) args) o
