@@ -2723,7 +2723,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_creating_function_object_proto_2 l lproto o1) o ->
       red_expr S0 C (spec_creating_function_object_proto_1 l (out_ter S lproto)) o
 
-   | red_spec_creating_function_object_proto_2 : forall S0 S C l lproto b o1 o, (* Step 18 *)
+   | red_spec_creating_function_object_proto_2 : forall S0 S C l lproto b o, (* Step 18 *)
       let A := attributes_data_intro (value_object lproto) true false false in
       red_expr S C (spec_object_define_own_prop l "prototype" A false) o ->
       red_expr S0 C (spec_creating_function_object_proto_2 l lproto (out_ter S b)) o
@@ -3775,11 +3775,11 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_construct_bool_1 o1) o ->
       red_expr S C (spec_construct_prealloc prealloc_bool args) o
 
-   | red_spec_construct_bool_1 : forall O l b S' S C,
+   | red_spec_construct_bool_1 : forall O l b S0 S' S C,
       let O1 := object_new prealloc_bool_proto "Boolean" in
       let O := object_with_primitive_value O1 b in
       (l, S') = object_alloc S O ->
-      red_expr S C (spec_construct_bool_1 (out_ter S b)) (out_ter S' l)
+      red_expr S0 C (spec_construct_bool_1 (out_ter S b)) (out_ter S' l)
 
   (*------------------------------------------------------------*)
   (** ** Boolean prototype builtin functions *)
