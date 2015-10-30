@@ -3775,7 +3775,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_construct_bool_1 o1) o ->
       red_expr S C (spec_construct_prealloc prealloc_bool args) o
 
-   | red_spec_construct_bool_1 : forall O l b S0 S' S C,
+   | red_spec_construct_bool_1 : forall l b S0 S' S C,
       let O1 := object_new prealloc_bool_proto "Boolean" in
       let O := object_with_primitive_value O1 b in
       (l, S') = object_alloc S O ->
@@ -3839,7 +3839,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_construct_number_1 o1) o ->
       red_expr S C (spec_construct_prealloc prealloc_number args) o
 
-  | red_spec_construct_number_1 : forall S0 S C S' O l v,
+  | red_spec_construct_number_1 : forall S0 S C S' l v,
       let O1 := object_new prealloc_number_proto "Number" in
       let O := object_with_primitive_value O1 v in
       (l, S') = object_alloc S O ->
