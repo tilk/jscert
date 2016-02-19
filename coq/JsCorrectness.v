@@ -3693,15 +3693,22 @@ Proof.
   introv IH R. unfolds in R. let_simpl.
   apply~ red_spec_equal. cases_if.
    run_inv. rewrite e. apply~ red_spec_equal_1_same_type.
-   apply~ red_spec_equal_1_diff_type. let_name.
-   asserts dc_conv_correct: (forall v1 F Ext v2 o,
-     dc_conv v1 F v2 = res_out o ->
+   apply~ red_spec_equal_1_diff_type. let_name. let_name.
+   asserts dc_convr_correct: (forall v1 F Ext v2 o,
+     dc_convr v1 F v2 = res_out o ->
      (forall S v o, F S v = o -> red_expr S C (Ext v) o) ->
-     red_expr S C (spec_equal_3 v1 Ext v2) o).
-     clear R. introv E Cor. substs. run red_spec_equal_3_convert_and_recurse.
+     red_expr S C (spec_equal_3r Ext v1 v2) o).
+     clear R. introv E Cor. substs. run red_spec_equal_3r_convert_and_recurse.
        run_inv. apply* Cor.
-     run_hyp. apply~ red_spec_equal_4_recurse.
-   clear EQdc_conv.
+     run_hyp. apply~ red_spec_equal_4r_recurse.
+   asserts dc_convl_correct: (forall v1 F Ext v2 o,
+     dc_convl v1 F v2 = res_out o ->
+     (forall S v o, F S v = o -> red_expr S C (Ext v) o) ->
+     red_expr S C (spec_equal_3l Ext v1 v2) o).
+     clear R. introv E Cor. substs. run red_spec_equal_3l_convert_and_recurse.
+       run_inv. apply* Cor.
+     run_hyp. apply~ red_spec_equal_4l_recurse.
+   clear EQdc_convl. clear EQdc_convr. 
   Ltac eqcas R :=
      match type of R with context [ ifb ?P then _ else _ ] =>
        let x := fresh "x" in set (x := P) in * end;
@@ -3709,12 +3716,12 @@ Proof.
                         | rewrite If_r; try assumption ].
    eqcas R. run_inv. applys red_spec_equal_2_return.
    eqcas R. run_inv. applys red_spec_equal_2_return.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_number_correct E.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_number_correct E.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_number_correct E.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_number_correct E.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_primitive_correct E.
-   eqcas R. applys dc_conv_correct R. introv E. applys* to_primitive_correct E.
+   eqcas R. applys dc_convr_correct R. introv E. applys* to_number_correct E.
+   eqcas R. applys dc_convl_correct R. introv E. applys* to_number_correct E.
+   eqcas R. applys dc_convl_correct R. introv E. applys* to_number_correct E.
+   eqcas R. applys dc_convr_correct R. introv E. applys* to_number_correct E.
+   eqcas R. applys dc_convr_correct R. introv E. applys* to_primitive_correct E.
+   eqcas R. applys dc_convl_correct R. introv E. applys* to_primitive_correct E.
    run_inv. applys red_spec_equal_2_return.
 Admitted. (* faster *)
 

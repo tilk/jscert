@@ -124,8 +124,10 @@ Inductive ext_expr :=
   | spec_equal : value -> value -> ext_expr
   | spec_equal_1 : type -> type -> value -> value -> ext_expr
   | spec_equal_2 : bool -> ext_expr
-  | spec_equal_3 : value -> (value -> ext_expr) -> value -> ext_expr
-  | spec_equal_4 : value -> out -> ext_expr
+  | spec_equal_3l : (value -> ext_expr) -> value -> value -> ext_expr
+  | spec_equal_3r : (value -> ext_expr) -> value -> value -> ext_expr
+  | spec_equal_4l : out -> value -> ext_expr
+  | spec_equal_4r : value -> out -> ext_expr
   | expr_bitwise_op_1 : (int -> int -> int) -> specret int -> value -> ext_expr
   | expr_bitwise_op_2 : (int -> int -> int) -> int -> specret int -> ext_expr
   | expr_lazy_op_1 : bool -> (specret value) -> expr -> ext_expr
@@ -825,8 +827,10 @@ Definition out_of_ext_expr (e : ext_expr) : option out :=
   | spec_equal _ _ => None
   | spec_equal_1 _ _ _ _ => None
   | spec_equal_2 _ => None
-  | spec_equal_3 _ _ _ => None
-  | spec_equal_4 _ o => Some o
+  | spec_equal_3l _ _ _ => None
+  | spec_equal_3r _ _ _ => None
+  | spec_equal_4l o _ => Some o
+  | spec_equal_4r _ o => Some o
   | expr_bitwise_op_1 _ y _ => out_of_specret y
   | expr_bitwise_op_2 _ _ y => out_of_specret y
   | expr_lazy_op_1 _ y _ => out_of_specret y

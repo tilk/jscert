@@ -1288,12 +1288,12 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       ext =
         (If ty1 = type_null /\ ty2 = type_undef then (spec_equal_2 true)
         else If ty1 = type_undef /\ ty2 = type_null then (spec_equal_2 true)
-        else If ty1 = type_number /\ ty2 = type_string then (spec_equal_3 v1 spec_to_number v2)
-        else If ty1 = type_string /\ ty2 = type_number then (spec_equal_3 v2 spec_to_number v1)
-        else If ty1 = type_bool then (spec_equal_3 v2 spec_to_number v1)
-        else If ty2 = type_bool then (spec_equal_3 v1 spec_to_number v2)
-        else If (ty1 = type_string \/ ty1 = type_number) /\ ty2 = type_object then (spec_equal_3 v1 spec_to_primitive_auto v2)
-        else If ty1 = type_object /\ (ty2 = type_string \/ ty2 = type_number) then (spec_equal_3 v2 spec_to_primitive_auto v1)
+        else If ty1 = type_number /\ ty2 = type_string then (spec_equal_3r spec_to_number v1 v2)
+        else If ty1 = type_string /\ ty2 = type_number then (spec_equal_3l spec_to_number v1 v2)
+        else If ty1 = type_bool then (spec_equal_3l spec_to_number v1 v2)
+        else If ty2 = type_bool then (spec_equal_3r spec_to_number v1 v2)
+        else If (ty1 = type_string \/ ty1 = type_number) /\ ty2 = type_object then (spec_equal_3r spec_to_primitive_auto v1 v2)
+        else If ty1 = type_object /\ (ty2 = type_string \/ ty2 = type_number) then (spec_equal_3l spec_to_primitive_auto v1 v2)
         else (spec_equal_2 false)) ->
       red_expr S C ext o ->
       red_expr S C (spec_equal_1 ty1 ty2 v1 v2) o
@@ -1301,14 +1301,23 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
   | red_spec_equal_2_return : forall S C b,
       red_expr S C (spec_equal_2 b) (out_ter S b)
 
-  | red_spec_equal_3_convert_and_recurse : forall S C v1 v2 K o2 o,
-      red_expr S C (K v2) o2 ->
-      red_expr S C (spec_equal_4 v1 o2) o ->
-      red_expr S C (spec_equal_3 v1 K v2) o
+  | red_spec_equal_3l_convert_and_recurse : forall S C v1 v2 K o1 o,
+      red_expr S C (K v1) o1 ->
+      red_expr S C (spec_equal_4l o1 v2) o ->
+      red_expr S C (spec_equal_3l K v1 v2) o
 
-  | red_spec_equal_4_recurse : forall S0 S C v1 v2 o,
+  | red_spec_equal_3r_convert_and_recurse : forall S C v1 v2 K o2 o,
+      red_expr S C (K v2) o2 ->
+      red_expr S C (spec_equal_4r v1 o2) o ->
+      red_expr S C (spec_equal_3r K v1 v2) o
+
+  | red_spec_equal_4l_recurse : forall S0 S C v1 v2 o,
       red_expr S C (spec_equal v1 v2) o ->
-      red_expr S0 C (spec_equal_4 v1 (out_ter S v2)) o
+      red_expr S0 C (spec_equal_4l (out_ter S v1) v2) o
+
+  | red_spec_equal_4r_recurse : forall S0 S C v1 v2 o,
+      red_expr S C (spec_equal v1 v2) o ->
+      red_expr S0 C (spec_equal_4r v1 (out_ter S v2)) o
 
   (** Binary op : strict equality/disequality (11.9.4) *)
 
