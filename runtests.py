@@ -163,7 +163,7 @@ class DBManager:
         return re.sub("^"+self.curdir+"/","",path)
 
     def report_results(self,results):
-        test_pipe = subprocess.Popen(["git","rev-parse","HEAD"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        test_pipe = subprocess.Popen(["git","rev-parse","HEAD"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         githash,errors = test_pipe.communicate()
         version = re.sub(r'\n','',githash)
         if args.interp_version:
@@ -437,7 +437,7 @@ for filename in args.filenames:
     current_test = printer.start_test(filename)
 
     setup()
-    test_pipe = subprocess.Popen(test_runner(filename), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    test_pipe = subprocess.Popen(test_runner(filename), stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     try:
         output,errors = test_pipe.communicate(timeout=args.timeout)
         ret = test_pipe.returncode
@@ -446,9 +446,9 @@ for filename in args.filenames:
         output,errors = test_pipe.communicate()
         errors += " TEST TIMEOUTED"
         ret = 255 # abort
-    output = output.decode("utf8").encode("ascii","xmlcharrefreplace")
-    try: errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
-    except: errors = "Failed to recode errors"
+#    output = output.decode("utf8").encode("ascii","xmlcharrefreplace")
+#    try: errors = errors.decode("utf8").encode("ascii","xmlcharrefreplace")
+#    except: errors = "Failed to recode errors"
     teardown()
 
     current_test(ret,output,errors)
