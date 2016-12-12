@@ -10,8 +10,16 @@ fi
 git_dir="$1/.git"
 
 if [[ ! -d "$git_dir" ]]; then
-    echo "$1 is not a git directory." >&2
-    exit 1
+    if [[ ! -f "$git_dir" ]]; then
+        echo "$1 is neither a git directory nor a git file." >&2
+        exit 1
+    else
+        git_dir=`cat "$1/.git" | grep gitdir | cut -d ' ' -f 2`
+        if [[ ! -d "$git_dir" ]]; then
+            echo "$git_dir is not a submodule directory." >&2
+            exit 1
+        fi
+    fi
 fi
 
 copy_hook() {
