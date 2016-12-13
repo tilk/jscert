@@ -38,7 +38,7 @@ Parameter to_string : number -> string.
 
 (* LATER: find definitions in Flocq *)
 
-Parameter neg : number -> number.
+Definition neg : number -> number := Fappli_IEEE_bits.b64_opp.
 Parameter floor : number -> number.
 Parameter ceil : number -> number.
 Parameter absolute : number -> number.
@@ -52,7 +52,8 @@ Parameter lt_bool : number -> number -> bool.
 Definition add : number -> number -> number :=
   Fappli_IEEE_bits.b64_plus Fappli_IEEE.mode_NE.
 
-Parameter sub : number -> number -> number. (* todo: bind *)
+Parameter sub : number -> number -> number
+  Fappli_IEEE_bits.b64_minus Fappli_IEEE.mode_NE.
 
 Parameter fmod : number -> number -> number. (* todo: bind *)
 
