@@ -14,12 +14,12 @@ Definition number : Type :=
 (** ** Particular values of numbers *)
 
 (* LATER: find definitions in Flocq *)
-Parameter nan : number.
-Parameter zero : number.
-Parameter neg_zero : number.
-Definition one := Fappli_IEEE.binary_normalize 53 1024 eq_refl eq_refl Fappli_IEEE.mode_NE 1 0 false.
-Parameter infinity : number.
-Parameter neg_infinity : number.
+Definition nan : number := Fappli_IEEE.B754_nan _ _.
+Definition zero : number := Fappli_IEEE.B754_zero _ _ true.
+Definition neg_zero : number := Fappli_IEEE.B754_zero _ _ false.
+Definition one : number := Fappli_IEEE.binary_normalize 53 1024 eq_refl eq_refl Fappli_IEEE.mode_NE 1 0 false.
+Definition infinity : number := Fappli_IEEE.B754_infinity _ _ true.
+Definition neg_infinity : number := Fappli_IEEE.B754_infinity _ _ false.
 Parameter max_value : number.
 Parameter min_value : number.
 Parameter pi : number.

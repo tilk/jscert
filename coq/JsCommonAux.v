@@ -59,10 +59,35 @@ Proof.
   destruct x; destruct y; simpls~; typeclass.
 Qed.
 
+Lemma same_value_is_eq : forall v1 v2, same_value v1 v2 = (v1 = v2).
+Proof.
+    intros. unfolds same_value.
+    assert (Heq_refl : forall T (x : T), (x = x) = True).
+    intros; rew_logic; split; auto.
+    cases_if.
+    * intro Heq; destruct v1 as [[]|o1]; destruct v2 as [[]|o2]; tryfalse.
+    * destruct v1 as [[| | |n1|]|o1]; destruct v2 as [[| | |n2|]|o2]; 
+      tryfalse; repeat rewrite Heq_refl; try trivial.
+      cases_if.
+      destruct a as (Ha1&Ha2). rewrite Ha1. rewrite Ha2. 
+      rewrite Heq_refl. trivial.
+      cases_if.
+      destruct a as (Ha1&Ha2). 
+      asserts_rewrite ((value_prim (prim_number n1) = n2) = False).
+      rew_logic. split; intro Hx; destruct Hx. rewrite Ha1 in Ha2. tryfalse.
+      trivial.
+      cases_if.
+      destruct a as (Ha1&Ha2). 
+      asserts_rewrite ((value_prim (prim_number n1) = n2) = False).
+      rew_logic. split; intro Hx; destruct Hx. rewrite Ha1 in Ha2. tryfalse.
+      trivial.
+      trivial.
+Qed.
+
 Global Instance same_value_dec : forall v1 v2,
   Decidable (same_value v1 v2).
 Proof.
-  introv. unfold same_value. typeclass.
+  introv. rewrite same_value_is_eq. typeclass.
 Qed.
 
 Lemma if_some_bool_then_same_self : forall bo,
