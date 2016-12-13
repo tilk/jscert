@@ -107,7 +107,9 @@ Definition type_of v :=
   end.
 
 (** Specification method SameValue used internally by [[DefineOwnProperty]] (9.12) *)
-Definition same_value v1 v2 :=
+Definition same_value v1 v2 := (v1 = v2).
+(* flocq correctly distinguishes zero and neg_zero, this overcomplicated
+   definition is not needed for formalization
   let ty1 := type_of v1 in
   let ty2 := type_of v2 in
   ifb ty1 <> ty2 then False else
@@ -126,6 +128,7 @@ Definition same_value v1 v2 :=
   | type_bool => (v1 = v2)
   | type_object => (v1 = v2)
   end.
+*)
 (* LATER: check problem of the several representations of NaN *)
 
 (**************************************************************)
