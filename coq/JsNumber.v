@@ -52,7 +52,7 @@ Parameter lt_bool : number -> number -> bool.
 Definition add : number -> number -> number :=
   Fappli_IEEE_bits.b64_plus Fappli_IEEE.mode_NE.
 
-Parameter sub : number -> number -> number
+Definition sub : number -> number -> number :=
   Fappli_IEEE_bits.b64_minus Fappli_IEEE.mode_NE.
 
 Parameter fmod : number -> number -> number. (* todo: bind *)
