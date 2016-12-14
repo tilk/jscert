@@ -22,6 +22,12 @@ report
 /test_reports/*
 
 *~
+*#
 
 trace.log
 /coq/#JsPrettyRules.v#
+
+.tern-port
+
+proof.patched
+

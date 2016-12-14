@@ -2717,7 +2717,7 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_error native_error_type) o ->
       red_expr S C (spec_binding_inst_function_decls_3a fd fds str fo bconfig A) o
 
-  | red_spec_binding_inst_function_decls_3a_no_error : forall S C fd fds str fo A bconfig o1 o, (* Step 5e iv else *)
+  | red_spec_binding_inst_function_decls_3a_no_error : forall S C fd fds str fo A bconfig o, (* Step 5e iv else *)
       ~ (descriptor_is_accessor A \/ attributes_writable A = false \/ attributes_enumerable A = false) ->
       red_expr S C (spec_binding_inst_function_decls_5 env_loc_global_env_record fd fds str fo bconfig) o ->
       red_expr S C (spec_binding_inst_function_decls_3a fd fds str fo bconfig A) o
@@ -4602,11 +4602,11 @@ with red_expr : state -> execution_ctx -> ext_expr -> out -> Prop :=
       red_expr S C (spec_construct_number_1 o1) o ->
       red_expr S C (spec_construct_prealloc prealloc_number args) o
 
-  | red_spec_construct_number_1 : forall S0 S C S' l v,
+  | red_spec_construct_number_1 : forall S0 S C S' O l n,
       let O1 := object_new prealloc_number_proto "Number" in
-      let O := object_with_primitive_value O1 v in
+      let O := object_with_primitive_value O1 n in
       (l, S') = object_alloc S O ->
-      red_expr S0 C (spec_construct_number_1 (out_ter S v)) (out_ter S' l)
+      red_expr S0 C (spec_construct_number_1 (out_ter S n)) (out_ter S' l)
 
   (*------------------------------------------------------------*)
   (** ** Number prototype builtin functions *)
